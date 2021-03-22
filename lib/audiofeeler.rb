@@ -1,10 +1,3 @@
-require 'audiofeeler/album'
-require 'audiofeeler/artist'
-require 'audiofeeler/attachment'
-require 'audiofeeler/license'
-require 'audiofeeler/release'
-require 'audiofeeler/track'
-require 'audiofeeler/encoder'
-require 'audiofeeler/tagger'
-require 'audiofeeler/album_releaser'
-require 'audiofeeler/track_releaser'
+# frozen_string_literal: true
+
+require 'audiofeeler/releaser'

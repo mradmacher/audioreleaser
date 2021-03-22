@@ -1,6 +1,25 @@
 AllCops:
   TargetRubyVersion: 2.7
   DisplayCopNames: true
+  NewCops: enable
 
   Include:
     - '**/*.rb'
+
+Metrics/BlockLength:
+  Exclude:
+    - 'test/**/*.rb'
+
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - 'test/**/*.rb'
+
+Metrics/ClassLength:
+  Max: 120
+  Exclude:
+    - 'test/**/*.rb'
+
+Metrics/AbcSize:
+  Exclude:
+    - 'test/**/*.rb'

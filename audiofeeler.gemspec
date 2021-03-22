@@ -23,4 +23,3 @@ Gem::Specification.new do |s|
   s.add_dependency 'shell_whisperer'
   s.add_development_dependency 'rubocop'
 end
-
