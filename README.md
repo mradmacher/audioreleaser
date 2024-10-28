@@ -2,4 +2,3 @@
 
 ## Requirements
 
-- libtag1-dev

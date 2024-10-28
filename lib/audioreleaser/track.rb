@@ -23,12 +23,6 @@ module Audioreleaser
       File.join(output_dir, filename)
     end
 
-    def with_release(format)
-      Audioreleaser::Encoder.within_tmp_dir do |tmp_dir|
-        yield generate(tmp_dir, format: format)
-      end
-    end
-
     private
 
     def prepare_release(working_dir, format, quality)
