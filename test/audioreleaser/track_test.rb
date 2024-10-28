@@ -2,10 +2,10 @@
 
 require 'test_helper'
 
-describe Audiofeeler::Releaser::Track do
+describe Audioreleaser::Track do
   before do
-    @album = Audiofeeler::Releaser::Album.new
-    @track = Audiofeeler::Releaser::Track.new(
+    @album = Audioreleaser::Album.new
+    @track = Audioreleaser::Track.new(
       File.new(File.join(FIXTURES_DIR, '1.wav')),
       title: 'Ta-bum-ta-bam'
     )
@@ -18,7 +18,7 @@ describe Audiofeeler::Releaser::Track do
 
     it 'creates ogg release with title only in name' do
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::OGG)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::OGG)
         assert File.exist? file_path
         assert_equal 'Tabumtabam.ogg', File.basename(file_path)
         assert `file #{file_path}` =~ /Ogg/
@@ -27,7 +27,7 @@ describe Audiofeeler::Releaser::Track do
 
     it 'creates mp3 release with title only in name' do
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::MP3)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::MP3)
         assert File.exist? file_path
         assert_equal 'Tabumtabam.mp3', File.basename(file_path)
         assert `file #{file_path}` =~ /MPEG/
@@ -36,7 +36,7 @@ describe Audiofeeler::Releaser::Track do
 
     it 'creates flac release with title only in name' do
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::FLAC)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::FLAC)
         assert File.exist? file_path
         assert_equal 'Tabumtabam.flac', File.basename(file_path)
         assert `file #{file_path}` =~ /FLAC/
@@ -51,7 +51,7 @@ describe Audiofeeler::Releaser::Track do
 
     it 'creates ogg release with title prefixed by rank' do
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::OGG)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::OGG)
         assert File.exist? file_path
         assert_equal '02-Tabumtabam.ogg', File.basename(file_path)
         assert `file #{file_path}` =~ /Ogg/
@@ -60,7 +60,7 @@ describe Audiofeeler::Releaser::Track do
 
     it 'creates mp3 release with title prefixed by rank' do
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::MP3)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::MP3)
         assert File.exist? file_path
         assert_equal '02-Tabumtabam.mp3', File.basename(file_path)
         assert `file #{file_path}` =~ /MPEG/
@@ -69,7 +69,7 @@ describe Audiofeeler::Releaser::Track do
 
     it 'creates flac release with title prefixed by rank' do
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::FLAC)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::FLAC)
         assert File.exist? file_path
         assert_equal '02-Tabumtabam.flac', File.basename(file_path)
         assert `file #{file_path}` =~ /FLAC/
@@ -85,24 +85,24 @@ describe Audiofeeler::Releaser::Track do
     it 'defaults artist to album artist if artist not specified in track' do
       @track.artist = nil
       @album.artist = 'Jęczące Brzękodźwięki'
-      tagger = Audiofeeler::Releaser::Tagger.new
+      tagger = Audioreleaser::Tagger.new
 
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::FLAC)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::FLAC)
         tag = tagger.fetch_from(file_path)
         assert_equal 'Jęczące Brzękodźwięki', tag.artist
         assert_equal 'Jęczące Brzękodźwięki', tag.album_artist
       end
 
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::OGG)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::OGG)
         tag = tagger.fetch_from(file_path)
         assert_equal 'Jęczące Brzękodźwięki', tag.artist
         assert_equal 'Jęczące Brzękodźwięki', tag.album_artist
       end
 
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::MP3)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::MP3)
         tag = tagger.fetch_from(file_path)
         assert_equal 'Jęczące Brzękodźwięki', tag.artist
         assert_equal 'Jęczące Brzękodźwięki', tag.album_artist
@@ -112,24 +112,24 @@ describe Audiofeeler::Releaser::Track do
     it 'uses artist name from track if set' do
       @track.artist = 'Świszczące Fujary'
       @album.artist = 'Jęczące Brzękodźwięki'
-      tagger = Audiofeeler::Releaser::Tagger.new
+      tagger = Audioreleaser::Tagger.new
 
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::FLAC)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::FLAC)
         tag = tagger.fetch_from(file_path)
         assert_equal 'Świszczące Fujary', tag.artist
         assert_equal 'Jęczące Brzękodźwięki', tag.album_artist
       end
 
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::OGG)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::OGG)
         tag = tagger.fetch_from(file_path)
         assert_equal 'Świszczące Fujary', tag.artist
         assert_equal 'Jęczące Brzękodźwięki', tag.album_artist
       end
 
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::MP3)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::MP3)
         tag = tagger.fetch_from(file_path)
         assert_equal 'Świszczące Fujary', tag.artist
         assert_equal 'Jęczące Brzękodźwięki', tag.album_artist
@@ -140,16 +140,16 @@ describe Audiofeeler::Releaser::Track do
       @album.artist = 'Album Artist'
       @album.year = 2021
       @album.title = 'Album Title'
-      @album.license = Audiofeeler::Releaser::License::CC_BY_40
+      @album.license = Audioreleaser::License::CC_BY_40
       @album.contact = 'http://example.com'
       @track.artist = 'Track Artist'
       @track.title = 'Track Title'
       @track.rank = 3
       @track.comment = 'Comment'
-      tagger = Audiofeeler::Releaser::Tagger.new
+      tagger = Audioreleaser::Tagger.new
 
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::FLAC)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::FLAC)
         tag = tagger.fetch_from(file_path)
         assert_equal 'Track Artist', tag.artist
         assert_equal 'Album Artist', tag.album_artist
@@ -167,7 +167,7 @@ describe Audiofeeler::Releaser::Track do
       end
 
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::OGG)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::OGG)
         tag = tagger.fetch_from(file_path)
         assert_equal 'Track Artist', tag.artist
         assert_equal 'Album Artist', tag.album_artist
@@ -185,7 +185,7 @@ describe Audiofeeler::Releaser::Track do
       end
 
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::MP3)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::MP3)
         tag = tagger.fetch_from(file_path)
         assert_equal 'Track Artist', tag.artist
         assert_equal 'Album Artist', tag.album_artist
@@ -214,10 +214,10 @@ describe Audiofeeler::Releaser::Track do
       @track.title = 'Track Title'
       @track.rank = 3
       @track.comment = 'Comment'
-      tagger = Audiofeeler::Releaser::Tagger.new
+      tagger = Audioreleaser::Tagger.new
 
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::FLAC)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::FLAC)
         tag = tagger.fetch_from(file_path)
         assert_nil tag.album_artist
         assert_nil tag.album
@@ -229,7 +229,7 @@ describe Audiofeeler::Releaser::Track do
       end
 
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::OGG)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::OGG)
         tag = tagger.fetch_from(file_path)
         assert_nil tag.album_artist
         assert_nil tag.album
@@ -241,7 +241,7 @@ describe Audiofeeler::Releaser::Track do
       end
 
       Dir.mktmpdir do |tmp_dir|
-        file_path = @track.generate(tmp_dir, format: Audiofeeler::Releaser::Encoder::MP3)
+        file_path = @track.generate(tmp_dir, format: Audioreleaser::Encoder::MP3)
         tag = tagger.fetch_from(file_path)
         assert_nil tag.album_artist
         assert_nil tag.album

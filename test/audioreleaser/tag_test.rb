@@ -2,15 +2,15 @@
 
 require 'test_helper'
 
-describe Audiofeeler::Releaser::Tag do
+describe Audioreleaser::Tag do
   describe '#build_extended_comment' do
     before do
       @comment = 'Jeden z najlepszych utworów jakie powstały'
-      @subject = Audiofeeler::Releaser::Tag
+      @subject = Audioreleaser::Tag
     end
 
     it 'adds license to comment tag' do
-      comment = @subject.build_extended_comment(@comment, license: Audiofeeler::Releaser::License::CC_BY_40)
+      comment = @subject.build_extended_comment(@comment, license: Audioreleaser::License::CC_BY_40)
       expected_comment =
         <<~COMMENT.chop
           Jeden z najlepszych utworów jakie powstały
@@ -35,7 +35,7 @@ describe Audiofeeler::Releaser::Tag do
 
     it 'adds licence and webpage to comment tag' do
       comment = @subject.build_extended_comment(@comment, contact: 'http://example.com',
-                                                          license: Audiofeeler::Releaser::License::CC_BY_40)
+                                                          license: Audioreleaser::License::CC_BY_40)
       expected_comment =
         <<~COMMENT.chop
           Jeden z najlepszych utworów jakie powstały
@@ -49,7 +49,7 @@ describe Audiofeeler::Releaser::Tag do
 
     it 'sets licence and webpage as comment tag if track has no comment' do
       comment = @subject.build_extended_comment(nil, contact: 'http://example.com',
-                                                     license: Audiofeeler::Releaser::License::CC_BY_40)
+                                                     license: Audioreleaser::License::CC_BY_40)
       expected_comment =
         <<~COMMENT.chop
           Creative Commons Attribution 4.0 International License

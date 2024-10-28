@@ -4,6 +4,6 @@ $LOAD_PATH << File.join(__dir__, '..', 'lib')
 
 require 'minitest/autorun'
 require 'minitest/spec'
-require 'audiofeeler'
+require 'audioreleaser'
 
 FIXTURES_DIR = File.join(__dir__, 'fixtures')

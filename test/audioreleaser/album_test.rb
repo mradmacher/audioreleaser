@@ -2,16 +2,16 @@
 
 require 'test_helper'
 
-describe Audiofeeler::Releaser::Album do
+describe Audioreleaser::Album do
   before do
-    @album = Audiofeeler::Releaser::Album.new(
+    @album = Audioreleaser::Album.new(
       title: 'Tłuczące pokrowce jeżozwierza',
       artist: 'Jęczące Brzękodźwięki',
       year: 2020
     )
     3.times.map do |i|
       @album.add_track(
-        Audiofeeler::Releaser::Track.new(
+        Audioreleaser::Track.new(
           File.new(File.join(FIXTURES_DIR, "#{i + 1}.wav")),
           title: "Przebój numer:  #{i + 1}",
           rank: i + 1
@@ -31,20 +31,20 @@ describe Audiofeeler::Releaser::Album do
   end
 
   it 'creates ogg release' do
-    @album.with_release(Audiofeeler::Releaser::Encoder::OGG) do |file_path|
-      check_album_release(Audiofeeler::Releaser::Encoder::OGG, file_path)
+    @album.with_release(Audioreleaser::Encoder::OGG) do |file_path|
+      check_album_release(Audioreleaser::Encoder::OGG, file_path)
     end
   end
 
   it 'creates flac release' do
-    @album.with_release(Audiofeeler::Releaser::Encoder::FLAC) do |file_path|
-      check_album_release(Audiofeeler::Releaser::Encoder::FLAC, file_path)
+    @album.with_release(Audioreleaser::Encoder::FLAC) do |file_path|
+      check_album_release(Audioreleaser::Encoder::FLAC, file_path)
     end
   end
 
   it 'creates mp3 release' do
-    @album.with_release(Audiofeeler::Releaser::Encoder::MP3) do |file_path|
-      check_album_release(Audiofeeler::Releaser::Encoder::MP3, file_path)
+    @album.with_release(Audioreleaser::Encoder::MP3) do |file_path|
+      check_album_release(Audioreleaser::Encoder::MP3, file_path)
     end
   end
 
@@ -76,7 +76,7 @@ describe Audiofeeler::Releaser::Album do
         # assert `file #{track_path}` =~ /#{type}/
       end
 
-      (Audiofeeler::Releaser::Encoder::FORMATS - [format]).each do |frmt|
+      (Audioreleaser::Encoder::FORMATS - [format]).each do |frmt|
         refute File.exist? File.join(album_path, "*.#{frmt}")
       end
 

@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-describe Audiofeeler::Releaser::Tagger do
+describe Audioreleaser::Tagger do
   before do
     @tmp_dir = Dir.mktmpdir
     FileUtils.cp(File.join(FIXTURES_DIR, 'test.flac'), @tmp_dir)
@@ -12,7 +12,7 @@ describe Audiofeeler::Releaser::Tagger do
     @ogg_path = File.join(@tmp_dir, 'test.ogg')
     @mp3_path = File.join(@tmp_dir, 'test.mp3')
 
-    @tag = Audiofeeler::Releaser::Tag.new
+    @tag = Audioreleaser::Tag.new
     @tag.album = 'Tłuczące pokrowce jeżozwierza'
     @tag.artist = 'Jęczące Brzękodźwięki'
     @tag.album_artist = 'Różni artyści'
@@ -25,7 +25,7 @@ describe Audiofeeler::Releaser::Tagger do
       http://example.com
     COMMENT
 
-    @tagger = Audiofeeler::Releaser::Tagger.new
+    @tagger = Audioreleaser::Tagger.new
   end
 
   after do
@@ -158,7 +158,7 @@ describe Audiofeeler::Releaser::Tagger do
   end
 
   it 'does not set missing tags' do
-    tag = Audiofeeler::Releaser::Tag.new
+    tag = Audioreleaser::Tag.new
     @tagger.apply_to(@flac_path, tag: tag)
     fetch_tags(@flac_path) do |found|
       assert found.artist.empty?
