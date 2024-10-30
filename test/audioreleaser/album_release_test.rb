@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-describe Audioreleaser::Release do
+describe Audioreleaser::AlbumRelease do
   before do
     @album = Audioreleaser::Album.new(
       title: 'Tłuczące pokrowce jeżozwierza',
@@ -19,7 +19,7 @@ describe Audioreleaser::Release do
       )
     end
 
-    @release = Audioreleaser::Release.new(@album)
+    @release = Audioreleaser::AlbumRelease.new(@album)
     @release.add_attachment(File.new(File.join(FIXTURES_DIR, 'att1.jpg')))
     @release.add_attachment(File.new(File.join(FIXTURES_DIR, 'att2.pdf')))
     @release.add_attachment(File.new(File.join(FIXTURES_DIR, 'att3.txt')))

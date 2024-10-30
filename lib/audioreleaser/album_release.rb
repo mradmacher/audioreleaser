@@ -4,13 +4,13 @@ require 'shell_whisperer'
 
 module Audioreleaser
   # Releases an album encoding audio files to a specific format, tagging them and packaging to a zip file.
-  class Release
+  class AlbumRelease
     QUALITY = {
       Encoder::OGG => 10,
       Encoder::MP3 => 0
     }.freeze
 
-    attr_reader :album, :attachments
+    attr_reader :album, :license, :contact, :attachments
 
     def initialize(album, license: nil, contact: nil)
       @album = album
@@ -54,7 +54,7 @@ module Audioreleaser
 
     def generate_files(output_dir, format)
       album.tracks.each do |track|
-        track.generate(
+        TrackRelease.new(track, license: license, contact: contact).generate(
           output_dir,
           format: format,
           quality: QUALITY[format]
