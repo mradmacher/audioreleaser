@@ -5,14 +5,14 @@ require 'taglib'
 module Audioreleaser
   # Applies tags to an audio file.
   class Tagger
-    def apply_to(file_path, tag:)
+    def apply_to(file_path, tags:)
       for_file(file_path) do |file_tags|
-        apply_common(file_tags, tag) if file_tags
+        apply_common(file_tags, tags) if file_tags
         case file_tags
         when TagLib::Ogg::XiphComment
-          apply_xiph_specific(file_tags, tag)
+          apply_xiph_specific(file_tags, tags)
         when TagLib::ID3v2::Tag
-          apply_id3v2_specific(file_tags, tag)
+          apply_id3v2_specific(file_tags, tags)
         end
       end
     end
@@ -44,23 +44,23 @@ module Audioreleaser
       end
     end
 
-    def read_tags(file_tag)
-      Tag.new(
-        album: value_or_nil(file_tag.album),
-        artist: value_or_nil(file_tag.artist),
-        title: value_or_nil(file_tag.title),
-        rank: nonzero_or_nil(file_tag.track),
-        year: nonzero_or_nil(file_tag.year),
-        comment: value_or_nil(file_tag.comment),
-        album_artist: value_or_nil(read_album_artist(file_tag))
+    def read_tags(file_tags)
+      Tags.new(
+        album: value_or_nil(file_tags.album),
+        artist: value_or_nil(file_tags.artist),
+        title: value_or_nil(file_tags.title),
+        rank: nonzero_or_nil(file_tags.track),
+        year: nonzero_or_nil(file_tags.year),
+        comment: value_or_nil(file_tags.comment),
+        album_artist: value_or_nil(read_album_artist(file_tags)),
       )
     end
 
-    def read_album_artist(file_tag)
-      if file_tag.respond_to?(:field_list_map)
-        file_tag.field_list_map['ALBUMARTIST']&.first
+    def read_album_artist(file_tags)
+      if file_tags.respond_to?(:field_list_map)
+        file_tags.field_list_map['ALBUMARTIST']&.first
       else
-        file_tag.frame_list('TPE2')&.first&.to_s
+        file_tags.frame_list('TPE2')&.first&.to_s
       end
     end
 
@@ -106,22 +106,22 @@ module Audioreleaser
       end
     end
 
-    def apply_common(file_tags, tag)
-      file_tags.artist = tag.artist
-      file_tags.title = tag.title
-      file_tags.album = tag.album
-      file_tags.year = tag.year if tag.year
-      file_tags.track = tag.rank if tag.rank
-      file_tags.comment = tag.comment
+    def apply_common(file_tags, tags)
+      file_tags.artist = tags.artist
+      file_tags.title = tags.title
+      file_tags.album = tags.album
+      file_tags.year = tags.year if tags.year
+      file_tags.track = tags.rank if tags.rank
+      file_tags.comment = tags.comment
     end
 
-    def apply_xiph_specific(file_tags, tag)
-      file_tags.add_field('ALBUMARTIST', tag.album_artist)
+    def apply_xiph_specific(file_tags, tags)
+      file_tags.add_field('ALBUMARTIST', tags.album_artist)
     end
 
-    def apply_id3v2_specific(file_tags, tag)
+    def apply_id3v2_specific(file_tags, tags)
       frame = TagLib::ID3v2::TextIdentificationFrame.new('TPE2', TagLib::String::UTF8)
-      frame.text = tag.album_artist
+      frame.text = tags.album_artist
       file_tags.add_frame(frame)
     end
   end
