@@ -6,8 +6,8 @@ describe Audioreleaser::TrackRelease do
   before do
     @album = Audioreleaser::Album.new
     @track = Audioreleaser::Track.new(
-      File.new(File.join(FIXTURES_DIR, '1.wav')),
-      title: 'Ta-bum-ta-bam'
+      file: File.new(File.join(FIXTURES_DIR, '1.wav')),
+      title: 'Ta-bum-ta-bam',
     )
     @release = Audioreleaser::TrackRelease.new(@track)
   end
@@ -254,5 +254,65 @@ describe Audioreleaser::TrackRelease do
       end
     end
   end
-end
 
+  describe 'comment tag' do
+    before do
+      @track.comment = 'Jeden z najlepszych utworów jakie powstały'
+    end
+
+    it 'adds license to comment tag' do
+      @release.license = Audioreleaser::License::CC_BY_40
+      comment = @release.tags.comment
+      expected_comment =
+        <<~COMMENT.chop
+          Jeden z najlepszych utworów jakie powstały
+          ---
+          Creative Commons Attribution 4.0 International License
+        COMMENT
+
+      assert_equal expected_comment, comment
+    end
+
+    it 'adds webpage to comment tag' do
+      @release.contact = 'http://example.com'
+      comment = @release.tags.comment
+      expected_comment =
+        <<~COMMENT.chop
+          Jeden z najlepszych utworów jakie powstały
+          ---
+          http://example.com
+        COMMENT
+
+      assert_equal expected_comment, comment
+    end
+
+    it 'adds licence and webpage to comment tag' do
+      @release.contact = 'http://example.com'
+      @release.license = Audioreleaser::License::CC_BY_40
+      comment = @release.tags.comment
+      expected_comment =
+        <<~COMMENT.chop
+          Jeden z najlepszych utworów jakie powstały
+          ---
+          Creative Commons Attribution 4.0 International License
+          http://example.com
+        COMMENT
+
+      assert_equal expected_comment, comment
+    end
+
+    it 'sets licence and webpage as comment tag if track has no comment' do
+      @track.comment = nil
+      @release.contact = 'http://example.com'
+      @release.license = Audioreleaser::License::CC_BY_40
+      comment = @release.tags.comment
+      expected_comment =
+        <<~COMMENT.chop
+          Creative Commons Attribution 4.0 International License
+          http://example.com
+        COMMENT
+
+      assert_equal expected_comment, comment
+    end
+  end
+end

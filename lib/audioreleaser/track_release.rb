@@ -22,6 +22,20 @@ module Audioreleaser
       File.join(output_dir, filename)
     end
 
+    # rubocop:disable Metrics/AbcSize
+    def tags
+      Audioreleaser::Tags.new(
+        album: track.album&.title,
+        album_artist: track.album&.artist,
+        artist: track.artist || track.album&.artist,
+        year: track.album&.year,
+        title: track.title,
+        rank: track.rank,
+        comment: build_extended_comment(track.comment, license: license, contact: contact),
+      )
+    end
+    # rubocop:enable Metrics/AbcSize
+
     private
 
     def prepare_release(working_dir, format, quality)
@@ -35,32 +49,23 @@ module Audioreleaser
         output_dir,
         file_basename,
         format: format,
-        quality: quality
+        quality: quality,
       )
-      tagger.apply_to(output_path, tag: tag)
+      tagger.apply_to(output_path, tags: tags)
     end
-
-    # rubocop:disable Metrics/AbcSize
-    # rubocop:disable Metrics/CyclomaticComplexity
-    def tag
-      Audioreleaser::Tag.new.tap do |t|
-        t.album = track.album&.title
-        t.album_artist = track.album&.artist
-        t.artist = track.artist || track.album&.artist
-        t.year = track.album&.year
-        t.title = track.title
-        t.rank = track.rank
-        t.comment = Audioreleaser::Tag.build_extended_comment(
-          track.comment, license: license, contact: contact
-        )
-      end
-    end
-    # rubocop:enable Metrics/CyclomaticComplexity
-    # rubocop:enable Metrics/AbcSize
 
     def file_basename
       value = track.rank ? "#{Kernel.format('%02d', track.rank)}-" : ''
       value + Audioreleaser::Encoder.parameterize(track.title).to_s
+    end
+
+    def build_extended_comment(comment, license: nil, contact: nil)
+      components = []
+      components << comment if comment
+      components << '---' if !components.empty? && (license || contact)
+      components << license.to_s if license
+      components << contact.to_s if contact
+      components.join("\n")
     end
 
     def tagger
@@ -68,4 +73,3 @@ module Audioreleaser
     end
   end
 end
-

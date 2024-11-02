@@ -57,7 +57,7 @@ module Audioreleaser
         TrackRelease.new(track, license: license, contact: contact).generate(
           output_dir,
           format: format,
-          quality: QUALITY[format]
+          quality: QUALITY[format],
         )
       end
     end

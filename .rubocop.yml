@@ -6,6 +6,9 @@ AllCops:
   Include:
     - '**/*.rb'
 
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: consistent_comma
+
 Metrics/BlockLength:
   Exclude:
     - 'test/**/*.rb'

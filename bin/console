@@ -6,6 +6,6 @@ $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'rubygems'
 require 'bundler/setup'
 require 'irb'
-require 'audiofeeler'
+require 'audioreleaser'
 
 IRB.start
