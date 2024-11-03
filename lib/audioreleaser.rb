@@ -3,6 +3,7 @@
 require 'audioreleaser/encoder'
 require 'audioreleaser/album'
 require 'audioreleaser/album_release'
+require 'audioreleaser/alboomer'
 require 'audioreleaser/track'
 require 'audioreleaser/track_release'
 require 'audioreleaser/license'
