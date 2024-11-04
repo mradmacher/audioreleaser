@@ -9,13 +9,8 @@ module Audioreleaser
       @tracks ||= []
     end
 
-    def add(title: nil, comment: nil, artist: nil)
-      tracks << Track.new(album: self, rank: tracks.size + 1, title:, comment:, artist:)
-    end
-
-    def add_track(track)
-      track.album = self
-      tracks << track
+    def add_track(file: nil, title: nil, comment: nil, artist: nil)
+      tracks << Track.new(album: self, rank: tracks.size + 1, file:, title:, comment:, artist:)
     end
   end
 end

@@ -12,7 +12,7 @@ module Audioreleaser
         year: a['year'],
       ).tap do |album|
         a['tracks'].each do |t|
-          album.add(
+          album.add_track(
             title: t['title'],
             artist: t['artist'],
             comment: t['comment'],
