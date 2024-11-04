@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ $# -eq 0 ] || [ -z "$1" ]; then
+  rake
+else
+  rake TEST="test/audioreleaser/$1"
+fi
