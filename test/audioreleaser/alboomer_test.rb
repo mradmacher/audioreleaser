@@ -7,7 +7,7 @@ describe Audioreleaser::Alboomer do
     yaml = <<-YAML_TEXT
       title: Najgorsze hity
       artist: Jęczące brzękodźwięki
-      date: 2025
+      year: 2025
       tracks:
         - title: Trata bam
           comment: Powstało, kiedy czasu było mało

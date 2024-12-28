@@ -9,7 +9,7 @@ module Audioreleaser
       Album.new(
         title: a['title'],
         artist: a['artist'],
-        year: a['date'],
+        year: a['year'],
       ).tap do |album|
         a['tracks'].each_with_index do |t, i|
           album.add_track(
