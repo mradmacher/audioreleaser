@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
+
+require 'audioreleaser'
+
+Dir.chdir("test/fixtures/album")
+files = Dir.glob("*.wav")
+yaml = File.open("info.yaml").read
+album = Audioreleaser::Alboomer.load_album(yaml, files)
+Audioreleaser::AlbumRelease.new(album).generate("/tmp/album", format: Audioreleaser::Encoder::FLAC)

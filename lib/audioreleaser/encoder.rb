@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'shell_whisperer'
+require 'fileutils'
 
 module Audioreleaser
   # Encodes an audio file to specified audio format.
@@ -37,16 +38,20 @@ module Audioreleaser
 
       case format
       when FLAC
-        gen_flac(file.path, output_path)
+        gen_flac(file_path(file), output_path)
       when OGG
-        gen_ogg(file.path, output_path, quality)
+        gen_ogg(file_path(file), output_path, quality)
       when MP3
-        gen_mp3(file.path, output_path, quality)
+        gen_mp3(file_path(file), output_path, quality)
       end
       output_path
     end
 
     private
+
+    def file_path(file)
+      file.is_a?(File) ? file.path : file
+    end
 
     def gen_ogg(input, output, quality)
       ShellWhisperer.run("oggenc -Q #{input} -q #{quality} -o #{output}")
