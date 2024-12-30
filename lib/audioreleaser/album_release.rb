@@ -64,7 +64,7 @@ module Audioreleaser
 
     def copy_attachments(output_dir)
       attachments.each do |attachment|
-        FileUtils.cp(attachment.path, output_dir)
+        FileUtils.cp(attachment, output_dir)
       end
     end
 

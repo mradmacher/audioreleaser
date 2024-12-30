@@ -3,9 +3,31 @@
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
 
 require 'audioreleaser'
+require 'optparse'
 
-Dir.chdir("test/fixtures/album")
-files = Dir.glob("*.wav")
-yaml = File.open("info.yaml").read
-album = Audioreleaser::Alboomer.load_album(yaml, files)
-Audioreleaser::AlbumRelease.new(album).generate("/tmp/album", format: Audioreleaser::Encoder::FLAC)
+in_dirname = "./"
+out_dirname = "./"
+info_filename = "info.yaml"
+include_info_file = false
+
+parser = OptionParser.new
+parser.on('--in DIR', 'Input directory with *.wav files') do |value|
+  in_dirname = value
+end
+parser.on('--out DIR', 'Output directory where the release .zip file is generated') do |value|
+  out_dirname = value
+end
+parser.on('--include-info', 'When provided the info file is included in the release?') do |value|
+  include_info_file = value
+end
+parser.parse!
+
+#Dir.chdir(in_dirname)
+
+audio_filenames = Dir.glob("*.wav")
+info_file_path = File.join(in_dirname, info_filename)
+info = File.open(info_file_path).read
+album = Audioreleaser::Alboomer.load_album(info, audio_filenames)
+album_release = Audioreleaser::AlbumRelease.new(album)
+album_release.add_attachment(info_file_path) if include_info_file
+album_release.generate(out_dirname, format: Audioreleaser::Encoder::FLAC)
