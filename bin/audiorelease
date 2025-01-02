@@ -1,13 +1,14 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 $LOAD_PATH << File.join(File.dirname(__FILE__), '..', 'lib')
 
 require 'audioreleaser'
 require 'optparse'
 
-in_dirname = "./"
-out_dirname = "./"
-info_filename = "info.yaml"
+in_dirname = './'
+out_dirname = './'
+info_filename = 'info.yaml'
 include_info_file = false
 
 parser = OptionParser.new
@@ -22,11 +23,9 @@ parser.on('--include-info', 'When provided the info file is included in the rele
 end
 parser.parse!
 
-#Dir.chdir(in_dirname)
-
-audio_filenames = Dir.glob("*.wav")
+audio_filenames = Dir.glob(File.join(in_dirname, '*.wav'))
 info_file_path = File.join(in_dirname, info_filename)
-info = File.open(info_file_path).read
+info = File.read(info_file_path)
 album = Audioreleaser::Alboomer.load_album(info, audio_filenames)
 album_release = Audioreleaser::AlbumRelease.new(album)
 album_release.add_attachment(info_file_path) if include_info_file

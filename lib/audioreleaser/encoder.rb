@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'shell_whisperer'
-require 'fileutils'
 
 module Audioreleaser
   # Encodes an audio file to specified audio format.
@@ -22,20 +21,14 @@ module Audioreleaser
       @file = file
     end
 
-    def self.within_tmp_dir(&)
-      Dir.mktmpdir(&)
-    end
-
     def self.parameterize(name)
       name.gsub(/[[:punct:]]/, '').gsub(/[[:space:]]+/, '_')
     end
 
     def generate_track(output_dir, output_basename, format:, quality:)
-      raise 'unknown format' unless %w[flac ogg mp3].include?(format.to_s)
+      raise 'unknown format' unless FORMATS.include?(format.to_sym)
 
-      FileUtils.mkdir_p(output_dir)
       output_path = File.join(output_dir, "#{output_basename}.#{format}")
-
       case format
       when FLAC
         gen_flac(file_path(file), output_path)
