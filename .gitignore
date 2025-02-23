@@ -11,6 +11,7 @@
 /tmp/
 /db/*.db
 *.swp
+*~
 
 # Used by dotenv library to load environment variables.
 # .env

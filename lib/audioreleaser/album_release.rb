@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'shell_whisperer'
+require 'fileutils'
+require 'tmpdir'
 
 module Audioreleaser
   # Releases an album encoding audio files to a specific format, tagging them and packaging to a zip file.
@@ -24,17 +26,19 @@ module Audioreleaser
     end
 
     def generate(output_dir, format:)
-      filename = prepare_release(output_dir, format)
+      filename = nil
+      Dir.mktmpdir do |working_dir|
+        filename = prepare_release(working_dir, format)
+        FileUtils.cp(File.join(working_dir, filename), output_dir)
+      end
       File.join(output_dir, filename)
     end
 
-    def with_release(format)
-      Audioreleaser::Encoder.within_tmp_dir do |tmp_dir|
-        yield generate(tmp_dir, format: format)
-      end
-    end
-
     private
+
+    def within_tmp_dir(&)
+      Dir.mktmpdir(&)
+    end
 
     def prepare_release(working_dir, format)
       album_name = Audioreleaser::Encoder.parameterize(album.title)
@@ -42,6 +46,7 @@ module Audioreleaser
 
       album_dir = File.join(artist_name, album_name)
       output_dir = File.join(working_dir, album_dir)
+      FileUtils.mkdir_p(output_dir)
 
       generate_files(output_dir, format)
       copy_attachments(output_dir)
@@ -64,7 +69,7 @@ module Audioreleaser
 
     def copy_attachments(output_dir)
       attachments.each do |attachment|
-        FileUtils.cp(attachment.path, output_dir)
+        FileUtils.cp(attachment, output_dir)
       end
     end
 

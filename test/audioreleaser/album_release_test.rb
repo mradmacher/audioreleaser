@@ -11,11 +11,8 @@ describe Audioreleaser::AlbumRelease do
     )
     3.times.map do |i|
       @album.add_track(
-        Audioreleaser::Track.new(
-          file: File.new(File.join(FIXTURES_DIR, "#{i + 1}.wav")),
-          title: "Przebój numer:  #{i + 1}",
-          rank: i + 1,
-        ),
+        file: File.new(File.join(FIXTURES_DIR, "#{i + 1}.wav")),
+        title: "Przebój numer:  #{i + 1}",
       )
     end
 
@@ -25,20 +22,42 @@ describe Audioreleaser::AlbumRelease do
     @release.add_attachment(File.new(File.join(FIXTURES_DIR, 'att3.txt')))
   end
 
+  it 'does not remove any files if input dir as output dir' do
+    Dir.mktmpdir do |tmp_dir|
+      @album.tracks.each do |track|
+        FileUtils.cp(track.file, tmp_dir)
+        track.file = File.new(File.join(tmp_dir, File.basename(track.file)))
+      end
+      expected_files = @album.tracks.map(&:file).map(&:path)
+      found_files = Dir["#{tmp_dir}/*"]
+
+      expected_files.each { assert_includes found_files, _1 }
+
+      file_path = @release.generate(tmp_dir, format: Audioreleaser::Encoder::FLAC)
+      check_album_release(Audioreleaser::Encoder::FLAC, file_path)
+
+      found_files = Dir["#{tmp_dir}/*"]
+      expected_files.each { assert_includes found_files, _1 }
+    end
+  end
+
   it 'creates ogg release' do
-    @release.with_release(Audioreleaser::Encoder::OGG) do |file_path|
+    Dir.mktmpdir do |tmp_dir|
+      file_path = @release.generate(tmp_dir, format: Audioreleaser::Encoder::OGG)
       check_album_release(Audioreleaser::Encoder::OGG, file_path)
     end
   end
 
   it 'creates flac release' do
-    @release.with_release(Audioreleaser::Encoder::FLAC) do |file_path|
+    Dir.mktmpdir do |tmp_dir|
+      file_path = @release.generate(tmp_dir, format: Audioreleaser::Encoder::FLAC)
       check_album_release(Audioreleaser::Encoder::FLAC, file_path)
     end
   end
 
   it 'creates mp3 release' do
-    @release.with_release(Audioreleaser::Encoder::MP3) do |file_path|
+    Dir.mktmpdir do |tmp_dir|
+      file_path = @release.generate(tmp_dir, format: Audioreleaser::Encoder::MP3)
       check_album_release(Audioreleaser::Encoder::MP3, file_path)
     end
   end

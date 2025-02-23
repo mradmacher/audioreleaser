@@ -80,7 +80,7 @@ describe Audioreleaser::TrackRelease do
 
   describe 'with album' do
     before do
-      @album.add_track(@track)
+      @track.album = @album
     end
 
     it 'defaults artist to album artist if artist not specified in track' do
